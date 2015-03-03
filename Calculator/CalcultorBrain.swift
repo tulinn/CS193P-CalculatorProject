@@ -36,27 +36,52 @@ class CalculatorBrain{
     private var knownOps = [String:Op]()
     private var variableValues: Dictionary<String,Double> = [String: Double]()
     
-//    var description: String{
-//        var stackCopy = opStack
-//        get{
-//            switch self{
-//            case .Operand(let operand):
-//                return "\(operand)"
-//            case .BinaryOperation(let symbol, _):
-//                op1 = stackCopy.removeLast()
-//                op2 = stackCopy.removeLast()
-//                return "\(op1)" + " " + symbol + "\"
-//            case .UnaryOperation(let symbol, _):
-//                return symbol + "(\($0))"
-//            case .NullaryOperation(let symbol, _):
-//                return symbol
-//            case .Variable(let symbol):
-//                return symbol
-//            }
-//        }
-//    }
+    var description: String?{
+        get{
+            var stackCopy = opStack
+            if let result = get(stackCopy).result{
+                return result
+            }
+            return nil
+        }
+    }
 
-
+    private func get(ops: [Op]) -> (result: String?, remainingOps: [Op]){
+        if !ops.isEmpty {
+            var remainingOps = ops
+            let op = remainingOps.removeLast()
+            switch op{
+            case .Operand(let operand):
+                return ("\(operand)", remainingOps)
+            case .UnaryOperation(let symbol, _):
+                let operandEval = get(remainingOps) //gets the operand
+                if let operand = operandEval.result{
+                    return (symbol + "(" + operand + ")", operandEval.remainingOps)
+                }
+            case .BinaryOperation(let symbol, _):
+                let op1Eval = get(remainingOps)
+                if let op1 = op1Eval.result{
+                    let op2Eval = get(op1Eval.remainingOps)
+                    if let op2 = op2Eval.result{
+                        let result = op1 + symbol + op2
+                        return (result, op2Eval.remainingOps)
+                    }
+                }
+            case .NullaryOperation(let symbol, _):
+                return (symbol, remainingOps)
+            case .Variable(let symbol):
+                if let operand = variableValues[symbol]{ //if exists in the variableValues dictionary return the corresponding value
+                    return (symbol, remainingOps)
+                }
+                else{ //else return nil
+                    return (nil, remainingOps)
+                }
+            }
+        }
+        return (nil,ops)
+    }
+    
+    
     init(){
         func learnOp(op: Op){ // this function saves repetitive typing for storing value in dictionary
             knownOps[op.description] = op
@@ -68,7 +93,8 @@ class CalculatorBrain{
         learnOp(Op.UnaryOperation("√", sqrt))
         learnOp(Op.UnaryOperation("sin", {sin($0)}))
         learnOp(Op.UnaryOperation("cos", {cos($0)}))
-        learnOp(Op.NullaryOperation("π", {M_PI})) // is not working correctly
+        learnOp(Op.NullaryOperation("π", {M_PI}))
+        
         //knownOps["ᐩ/-"] = Op.UnaryOperation("ᐩ/-", { -$0 })
         //knownOps["x"] =
     }
@@ -161,7 +187,7 @@ class CalculatorBrain{
     }
     
     func displayStack() -> String{
-        let stringRepresentation = " ".join(opStack.map({ "\($0)" })) // map method for arrays in this case convert an array with int values into an array with string values
+        let stringRepresentation = ", ".join(opStack.map({ "\($0)" })) // map method for arrays in this case convert an array with int values into an array with string values
         return stringRepresentation
     }
 }

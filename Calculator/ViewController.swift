@@ -73,7 +73,7 @@ class ViewController: UIViewController {
             if let result = brain.performOperation(operation){
                 displayValue = result
             }else{
-                displayValue = 0
+                displayValue = nil
             }
         }
         displayHistory.text = brain.displayStack() + " ="
@@ -95,12 +95,13 @@ class ViewController: UIViewController {
     @IBAction func enter() {
         userInTheMiddleOfTypingNumber = false
         theNumberIsFloating = false
-        brain.pushOperand(displayValue!)
-        displayHistory.text = brain.displayStack()
+        //brain.pushOperand(displayValue!)
 
         if let result = displayValue{
             brain.pushOperand(result)
         }
+        displayHistory.text = brain.displayStack()
+
     }
     
     var displayValue: Double?{
