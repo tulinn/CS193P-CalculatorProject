@@ -253,7 +253,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="clear:" destination="BYZ-38-t0r" eventType="touchUpInside" id="trg-WV-eMn"/>
+                                    <action selector="clear:" destination="BYZ-38-t0r" eventType="touchUpInside" id="oZN-Nc-PL2"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6O6-pH-C5Z">
@@ -435,7 +435,7 @@
                     </view>
                     <connections>
                         <outlet property="display" destination="Vdw-rx-7TE" id="jSH-eE-eOZ"/>
-                        <outlet property="opDisplay" destination="qHX-hS-nbB" id="1Sh-6r-otp"/>
+                        <outlet property="displayHistory" destination="qHX-hS-nbB" id="e2L-x6-Obk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

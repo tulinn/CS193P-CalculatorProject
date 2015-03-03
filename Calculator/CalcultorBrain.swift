@@ -8,7 +8,7 @@
 
 import Foundation
 class CalculatorBrain{
-    private enum Op{
+    private enum Op: Printable{
         case Operand(Double)
         case UnaryOperation(String, Double -> Double)
         case BinaryOperation(String, (Double, Double) -> Double)
@@ -37,22 +37,39 @@ class CalculatorBrain{
     private var variableValues: Dictionary<String,Double> = [String: Double]()
     
 //    var description: String{
+//        var stackCopy = opStack
 //        get{
-//            
+//            switch self{
+//            case .Operand(let operand):
+//                return "\(operand)"
+//            case .BinaryOperation(let symbol, _):
+//                op1 = stackCopy.removeLast()
+//                op2 = stackCopy.removeLast()
+//                return "\(op1)" + " " + symbol + "\"
+//            case .UnaryOperation(let symbol, _):
+//                return symbol + "(\($0))"
+//            case .NullaryOperation(let symbol, _):
+//                return symbol
+//            case .Variable(let symbol):
+//                return symbol
+//            }
 //        }
 //    }
-    
+
 
     init(){
-        knownOps["×"] = Op.BinaryOperation("×", *)
-        knownOps["÷"] = Op.BinaryOperation("÷", {$1 / $0})
-        knownOps["+"] = Op.BinaryOperation("+", +)
-        knownOps["−"] = Op.BinaryOperation("−", {$1 - $0})
-        knownOps["√"] = Op.UnaryOperation("√", sqrt)
-        knownOps["sin"] = Op.UnaryOperation("sin", {sin($0)})
-        knownOps["cos"] = Op.UnaryOperation("cos", {cos($0)})
+        func learnOp(op: Op){ // this function saves repetitive typing for storing value in dictionary
+            knownOps[op.description] = op
+        }
+        learnOp(Op.BinaryOperation("×", *)) // same as typing: knownOps["×"] = Op.BinaryOperation("×", *)
+        learnOp(Op.BinaryOperation("÷", {$1 / $0}))
+        learnOp(Op.BinaryOperation("+", +))
+        learnOp(Op.BinaryOperation("−", {$1 - $0}))
+        learnOp(Op.UnaryOperation("√", sqrt))
+        learnOp(Op.UnaryOperation("sin", {sin($0)}))
+        learnOp(Op.UnaryOperation("cos", {cos($0)}))
+        learnOp(Op.NullaryOperation("π", {M_PI})) // is not working correctly
         //knownOps["ᐩ/-"] = Op.UnaryOperation("ᐩ/-", { -$0 })
-        knownOps["π"] = Op.NullaryOperation("π", {M_PI}) //is not working correctly 
         //knownOps["x"] =
     }
     
@@ -141,5 +158,10 @@ class CalculatorBrain{
     }
     func clear(){
         opStack = []
+    }
+    
+    func displayStack() -> String{
+        let stringRepresentation = " ".join(opStack.map({ "\($0)" })) // map method for arrays in this case convert an array with int values into an array with string values
+        return stringRepresentation
     }
 }

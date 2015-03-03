@@ -9,14 +9,14 @@
 import UIKit
 class ViewController: UIViewController {
     @IBOutlet weak var display: UILabel!
-    @IBOutlet weak var opDisplay: UILabel!
+    @IBOutlet weak var displayHistory: UILabel!
     
     var userInTheMiddleOfTypingNumber: Bool = false
     var brain = CalculatorBrain()
     var theNumberIsFloating: Bool = false
     var opDisplayInUse: Bool = false
     
-    @IBAction func appendDigit(sender: UIButton) {
+    @IBAction func appendDigit(sender: UIButton) { //appends digit by digit to the display
         let digit = sender.currentTitle!
         if userInTheMiddleOfTypingNumber{
             display.text = display.text! + digit
@@ -27,7 +27,7 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func backspace(sender: UIButton) {
+    @IBAction func backspace(sender: UIButton) { //deletes a digit if the display is not empty. This part has nothing to do with the brain as the number is still in the process of being created.
         if userInTheMiddleOfTypingNumber{
             if display.text == ""{
                 userInTheMiddleOfTypingNumber = false
@@ -41,7 +41,7 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func changeSign(sender: UIButton) {
+    @IBAction func changeSign(sender: UIButton) { //again in this part the number is still not completed, user is still in the middle of typing. Therefore has nothing to do with brain.
         var current: String = display.text!
         if current[current.startIndex] == "−" {
             current = dropFirst(current)
@@ -52,8 +52,8 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func clear(sender: UIButton) {
-        opDisplay.text = "0"
+    @IBAction func clear() { //this part clears both labels display and displayHistory. It also clears the opStack in Brain.
+        displayHistory.text = "0"
         display.text = "0"
         brain.clear()
         opDisplayInUse = false
@@ -61,12 +61,14 @@ class ViewController: UIViewController {
         theNumberIsFloating = false
     }
     
-    @IBAction func operate(sender: UIButton) {
-        //println(sender.currentTitle)
+    @IBAction func operate(sender: UIButton) { //this method is processed when one of the operations is pressed.
+        var currText = displayHistory.text!
+        let newText = currText.stringByReplacingOccurrencesOfString("=", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil) // first, we remove the previous "=" in the displayHistory
+        displayHistory.text = newText
+        
         if userInTheMiddleOfTypingNumber{
             enter()
         }
-        opDisplay.text = opDisplay.text! + " " + sender.currentTitle!
         if let operation = sender.currentTitle{
             if let result = brain.performOperation(operation){
                 displayValue = result
@@ -74,10 +76,10 @@ class ViewController: UIViewController {
                 displayValue = 0
             }
         }
-        opDisplay.text = opDisplay.text! + " " + display.text! + " ="
+        displayHistory.text = brain.displayStack() + " ="
     }
     
-    @IBAction func float(sender: UIButton) {
+    @IBAction func float(sender: UIButton) { //this method has nothing to do with the brain part as the user is still in the middle of typing number.
         if theNumberIsFloating == false{
             theNumberIsFloating = true
             if userInTheMiddleOfTypingNumber {
@@ -93,33 +95,26 @@ class ViewController: UIViewController {
     @IBAction func enter() {
         userInTheMiddleOfTypingNumber = false
         theNumberIsFloating = false
-        if opDisplayInUse{
-            opDisplay.text = opDisplay.text! + " ↵ " + display.text!
+        brain.pushOperand(displayValue!)
+        displayHistory.text = brain.displayStack()
+
+        if let result = displayValue{
+            brain.pushOperand(result)
         }
-        else{
-            opDisplay.text = display.text!
-            opDisplayInUse = true
-        }
-        brain.pushOperand(displayValue)
-//        if let result = brain.pushOperand(displayValue) {
-//            displayValue = result
-//        } else{
-//            displayValue = nil
-//        }
     }
     
-    var displayValue: Double{
+    var displayValue: Double?{
         get{
             return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
         }
         set{
             display.text = "\(newValue)"
-//            if newValue != nil{
-//                display.text = "\(newValue)"
-//            }
-//            else{
-//                clear()
-//            }
+            if newValue != nil{
+                display.text = "\(newValue)"
+            }
+            else{
+                clear()
+            }
         }
     }
 }
