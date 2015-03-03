@@ -63,7 +63,13 @@ class CalculatorBrain{
                 if let op1 = op1Eval.result{
                     let op2Eval = get(op1Eval.remainingOps)
                     if let op2 = op2Eval.result{
-                        let result = op1 + symbol + op2
+                        var result = ""
+                        if symbol == "+" || symbol == "−"{
+                            result = "(" + op1 + symbol + op2 + ")"
+                        }
+                        else{
+                            result = op1 + symbol + op2
+                        }
                         return (result, op2Eval.remainingOps)
                     }
                 }

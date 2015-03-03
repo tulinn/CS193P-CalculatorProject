@@ -76,7 +76,7 @@ class ViewController: UIViewController {
                 displayValue = nil
             }
         }
-        displayHistory.text = brain.displayStack() + " ="
+        displayHistory.text = brain.description! + " ="
     }
     
     @IBAction func float(sender: UIButton) { //this method has nothing to do with the brain part as the user is still in the middle of typing number.
@@ -100,7 +100,8 @@ class ViewController: UIViewController {
         if let result = displayValue{
             brain.pushOperand(result)
         }
-        displayHistory.text = brain.displayStack()
+
+        displayHistory.text = brain.description
 
     }
     
@@ -109,9 +110,8 @@ class ViewController: UIViewController {
             return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
         }
         set{
-            display.text = "\(newValue)"
-            if newValue != nil{
-                display.text = "\(newValue)"
+            if let value = newValue{
+                display.text = "\(value)"
             }
             else{
                 clear()
