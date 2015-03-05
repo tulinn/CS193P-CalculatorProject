@@ -39,6 +39,7 @@ class CalculatorBrain{
     var description: String?{
         get{
             var stackCopy = opStack
+            //println(stackCopy)
             if let result = get(stackCopy).result{
                 return result
             }
@@ -59,16 +60,29 @@ class CalculatorBrain{
                     return (symbol + "(" + operand + ")", operandEval.remainingOps)
                 }
             case .BinaryOperation(let symbol, _):
+            //historical order with the oldest at the beginning of the string and the most recently pushed/performed at the end, that is why op2 comes before op1 when producing the result
+    
                 let op1Eval = get(remainingOps)
                 if let op1 = op1Eval.result{
                     let op2Eval = get(op1Eval.remainingOps)
                     if let op2 = op2Eval.result{
                         var result = ""
-                        if symbol == "+" || symbol == "−"{
-                            result = "(" + op1 + symbol + op2 + ")"
+                        if symbol == "×" || symbol == "÷"{ //to control the parentheses
+                            if PlusOrMinusExist(op1) && PlusOrMinusExist(op2){
+                                result = "(" + op2 + ")" + symbol + "(" + op1 + ")"
+                            }
+                            else if PlusOrMinusExist(op1){
+                                result = op2 + symbol + "(" + op1 + ")"
+                            }
+                            else if PlusOrMinusExist(op2){
+                                result = "(" + op2  + ")" + symbol + op1
+                            }
+                            else{
+                                result = op2 + symbol + op1
+                            }
                         }
                         else{
-                            result = op1 + symbol + op2
+                            result = op2 + symbol + op1
                         }
                         return (result, op2Eval.remainingOps)
                     }
@@ -87,6 +101,15 @@ class CalculatorBrain{
         return (nil,ops)
     }
     
+    func PlusOrMinusExist(operation:String) -> Bool{
+        //println("operation = \(operation)")
+        if operation.lowercaseString.rangeOfString("+") != nil || operation.lowercaseString.rangeOfString("−") != nil{
+            return true
+        }
+        else{
+            return false
+        }
+    }
     
     init(){
         func learnOp(op: Op){ // this function saves repetitive typing for storing value in dictionary
@@ -190,6 +213,7 @@ class CalculatorBrain{
     }
     func clear(){
         opStack = []
+        variableValues = [String: Double]()
     }
     
     func displayStack() -> String{
