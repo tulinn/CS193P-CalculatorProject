@@ -27,6 +27,14 @@ class ViewController: UIViewController {
         }
     }
     
+//    @IBAction func getM(sender: UIButton) {
+//
+//    }
+//    
+//    @IBAction func setM(sender: UIButton) {
+//        
+//    }
+    
     @IBAction func backspace(sender: UIButton) { //deletes a digit if the display is not empty. This part has nothing to do with the brain as the number is still in the process of being created.
         if userInTheMiddleOfTypingNumber{
             if display.text == ""{
@@ -70,13 +78,11 @@ class ViewController: UIViewController {
             enter()
         }
         if let operation = sender.currentTitle{
-            if let result = brain.performOperation(operation){
-                displayValue = result
-            }else{
-                displayValue = nil
+            displayValue = brain.performOperation(operation)
+            if let result = brain.performOperation(operation) { //if not nil
+                displayHistory.text = brain.description! + " ="
             }
         }
-        displayHistory.text = brain.description! + " ="
     }
     
     @IBAction func float(sender: UIButton) { //this method has nothing to do with the brain part as the user is still in the middle of typing number.
@@ -97,12 +103,14 @@ class ViewController: UIViewController {
         theNumberIsFloating = false
         //brain.pushOperand(displayValue!)
 
-        if let result = displayValue{
+        if let result = displayValue{ //if displayValue is not nil
             brain.pushOperand(result)
+        }
+        else{
+            clear()
         }
 
         displayHistory.text = brain.description
-
     }
     
     var displayValue: Double?{
@@ -110,10 +118,12 @@ class ViewController: UIViewController {
             return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
         }
         set{
+            println("newVal is \(newValue)")
             if let value = newValue{
                 display.text = "\(value)"
             }
             else{
+                println("about to clear")
                 clear()
             }
         }

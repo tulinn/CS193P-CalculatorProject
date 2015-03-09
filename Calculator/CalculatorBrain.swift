@@ -1,5 +1,5 @@
 //
-//  CalcultorBrain.swift
+//  CalculatorBrain.swift
 //  Calculator
 //
 //  Created by Tulin Akdogan on 2/8/15.
@@ -35,6 +35,18 @@ class CalculatorBrain{
     private var opStack = [Op]()
     private var knownOps = [String:Op]()
     private var variableValues: Dictionary<String,Double> = [String: Double]()
+    
+    var M: Double?{
+        get{
+            pushOperand("M")
+            return variableValues["M"]
+        }
+        set{
+            if let value = newValue{
+                variableValues["M"] = value
+            }
+        }
+    }
     
     var description: String?{
         get{
@@ -123,11 +135,9 @@ class CalculatorBrain{
         learnOp(Op.UnaryOperation("sin", {sin($0)}))
         learnOp(Op.UnaryOperation("cos", {cos($0)}))
         learnOp(Op.NullaryOperation("π", {M_PI}))
-        
+        learnOp(Op.Variable("M"))
         //knownOps["ᐩ/-"] = Op.UnaryOperation("ᐩ/-", { -$0 })
-        //knownOps["x"] =
     }
-    
     
 //    var program: AnyObject{ //guaranteed to be a property
 //        get{
@@ -190,6 +200,7 @@ class CalculatorBrain{
     func evaluate() -> Double? {
         let (result, remainingOps) = evaluate(opStack)
         println("\(opStack) = \(result) with \(remainingOps) left over")
+        //println("result is \(result)")
         return result
     }
     
@@ -208,16 +219,25 @@ class CalculatorBrain{
         //println("in performOperation")
         if let operation = knownOps[symbol]{ //if not nil
             opStack.append(operation)
+            return evaluate()
         }
-        return evaluate()
+        else{
+            return nil
+        }
     }
     func clear(){
         opStack = []
         variableValues = [String: Double]()
     }
+
     
-    func displayStack() -> String{
-        let stringRepresentation = ", ".join(opStack.map({ "\($0)" })) // map method for arrays in this case convert an array with int values into an array with string values
-        return stringRepresentation
-    }
+    
+    
+// this function is not needed anymore
+//    func displayStack() -> String{
+//        let stringRepresentation = ", ".join(opStack.map({ "\($0)" })) // map method for arrays in this case convert an array with int values into an array with string values
+//        return stringRepresentation
+//    }
+
+
 }
