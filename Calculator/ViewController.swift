@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     var brain = CalculatorBrain()
     var theNumberIsFloating: Bool = false
     var opDisplayInUse: Bool = false
+    var checkValue: Double?
     
     @IBAction func appendDigit(sender: UIButton) { //appends digit by digit to the display
         let digit = sender.currentTitle!
@@ -27,13 +28,22 @@ class ViewController: UIViewController {
         }
     }
     
-//    @IBAction func getM(sender: UIButton) {
-//
-//    }
-//    
-//    @IBAction func setM(sender: UIButton) {
-//        
-//    }
+    @IBAction func getM(sender: UIButton) {
+        if let symbol = sender.currentTitle{
+            brain.pushOperand(symbol)
+        }
+    }
+    
+    @IBAction func setM(sender: UIButton) {
+        if userInTheMiddleOfTypingNumber{
+            enter()
+        }
+        if let symbol = sender.currentTitle{
+            if let value = brain.getTheLastOperand() {
+                brain.setSymbol(symbol, value: value)
+            }
+        }
+    }
     
     @IBAction func backspace(sender: UIButton) { //deletes a digit if the display is not empty. This part has nothing to do with the brain as the number is still in the process of being created.
         if userInTheMiddleOfTypingNumber{
@@ -78,8 +88,9 @@ class ViewController: UIViewController {
             enter()
         }
         if let operation = sender.currentTitle{
-            displayValue = brain.performOperation(operation)
-            if let result = brain.performOperation(operation) { //if not nil
+            checkValue = brain.performOperation(operation)
+            displayValue = checkValue
+            if let result = checkValue { //if not nil
                 displayHistory.text = brain.description! + " ="
             }
         }

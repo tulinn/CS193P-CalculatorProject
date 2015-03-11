@@ -36,16 +36,20 @@ class CalculatorBrain{
     private var knownOps = [String:Op]()
     private var variableValues: Dictionary<String,Double> = [String: Double]()
     
-    var M: Double?{
-        get{
-            pushOperand("M")
-            return variableValues["M"]
-        }
-        set{
-            if let value = newValue{
-                variableValues["M"] = value
+    func setSymbol(symbol: String, value: Double) {
+        variableValues[symbol] = value
+    }
+    
+    func getTheLastOperand() -> Double?{
+        if !opStack.isEmpty {
+            let value = opStack.removeLast()
+            switch value{
+            case .Operand(let operand):
+                return operand
+            default: break
             }
         }
+        return nil
     }
     
     var description: String?{
@@ -225,6 +229,7 @@ class CalculatorBrain{
             return nil
         }
     }
+    
     func clear(){
         opStack = []
         variableValues = [String: Double]()
