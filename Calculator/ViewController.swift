@@ -38,9 +38,11 @@ class ViewController: UIViewController {
         if userInTheMiddleOfTypingNumber{
             enter()
         }
-        if let symbol = sender.currentTitle{
-            if let value = brain.getTheLastOperand() {
-                brain.setSymbol(symbol, value: value)
+        var symbol: String = "M"
+        if let value = brain.popOperand() {
+            if let result = brain.setSymbol(symbol, value: value){
+                displayHistory.text = brain.description! + " ="
+                displayValue = result
             }
         }
     }

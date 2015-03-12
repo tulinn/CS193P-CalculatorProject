@@ -34,23 +34,8 @@ class CalculatorBrain{
     
     private var opStack = [Op]()
     private var knownOps = [String:Op]()
-    private var variableValues: Dictionary<String,Double> = [String: Double]()
-    
-    func setSymbol(symbol: String, value: Double) {
-        variableValues[symbol] = value
-    }
-    
-    func getTheLastOperand() -> Double?{
-        if !opStack.isEmpty {
-            let value = opStack.removeLast()
-            switch value{
-            case .Operand(let operand):
-                return operand
-            default: break
-            }
-        }
-        return nil
-    }
+    private var variableValues: Dictionary<String,Double?> = [String: Double?]()
+    private var symbolInUse: Bool = false
     
     var description: String?{
         get{
@@ -64,57 +49,62 @@ class CalculatorBrain{
     }
 
     private func get(ops: [Op]) -> (result: String?, remainingOps: [Op]){
-        if !ops.isEmpty {
-            var remainingOps = ops
-            let op = remainingOps.removeLast()
-            switch op{
-            case .Operand(let operand):
-                return ("\(operand)", remainingOps)
-            case .UnaryOperation(let symbol, _):
-                let operandEval = get(remainingOps) //gets the operand
-                if let operand = operandEval.result{
-                    return (symbol + "(" + operand + ")", operandEval.remainingOps)
-                }
-            case .BinaryOperation(let symbol, _):
-            //historical order with the oldest at the beginning of the string and the most recently pushed/performed at the end, that is why op2 comes before op1 when producing the result
-    
-                let op1Eval = get(remainingOps)
-                if let op1 = op1Eval.result{
-                    let op2Eval = get(op1Eval.remainingOps)
-                    if let op2 = op2Eval.result{
-                        var result = ""
-                        if symbol == "×" || symbol == "÷"{ //to control the parentheses
-                            if PlusOrMinusExist(op1) && PlusOrMinusExist(op2){
-                                result = "(" + op2 + ")" + symbol + "(" + op1 + ")"
-                            }
-                            else if PlusOrMinusExist(op1){
-                                result = op2 + symbol + "(" + op1 + ")"
-                            }
-                            else if PlusOrMinusExist(op2){
-                                result = "(" + op2  + ")" + symbol + op1
+        if canPerform() == false {
+            return ("", ops)
+        }
+        else{
+            if !ops.isEmpty {
+                var remainingOps = ops
+                let op = remainingOps.removeLast()
+                switch op{
+                case .Operand(let operand):
+                    return ("\(operand)", remainingOps)
+                case .UnaryOperation(let symbol, _):
+                    let operandEval = get(remainingOps) //gets the operand
+                    if let operand = operandEval.result{
+                        return (symbol + "(" + operand + ")", operandEval.remainingOps)
+                    }
+                case .BinaryOperation(let symbol, _):
+                    //historical order with the oldest at the beginning of the string and the most recently pushed/performed at the end, that is why op2 comes before op1 when producing the result
+                    
+                    let op1Eval = get(remainingOps)
+                    if let op1 = op1Eval.result{
+                        let op2Eval = get(op1Eval.remainingOps)
+                        if let op2 = op2Eval.result{
+                            var result = ""
+                            if symbol == "×" || symbol == "÷"{ //to control the parentheses
+                                if PlusOrMinusExist(op1) && PlusOrMinusExist(op2){
+                                    result = "(" + op2 + ")" + symbol + "(" + op1 + ")"
+                                }
+                                else if PlusOrMinusExist(op1){
+                                    result = op2 + symbol + "(" + op1 + ")"
+                                }
+                                else if PlusOrMinusExist(op2){
+                                    result = "(" + op2  + ")" + symbol + op1
+                                }
+                                else{
+                                    result = op2 + symbol + op1
+                                }
                             }
                             else{
                                 result = op2 + symbol + op1
                             }
+                            return (result, op2Eval.remainingOps)
                         }
-                        else{
-                            result = op2 + symbol + op1
-                        }
-                        return (result, op2Eval.remainingOps)
+                    }
+                case .NullaryOperation(let symbol, _):
+                    return (symbol, remainingOps)
+                case .Variable(let symbol):
+                    if let operand = variableValues[symbol]{ //if exists in the variableValues dictionary return the corresponding value
+                        return (symbol, remainingOps)
+                    }
+                    else{ //else return nil
+                        return (nil, remainingOps)
                     }
                 }
-            case .NullaryOperation(let symbol, _):
-                return (symbol, remainingOps)
-            case .Variable(let symbol):
-                if let operand = variableValues[symbol]{ //if exists in the variableValues dictionary return the corresponding value
-                    return (symbol, remainingOps)
-                }
-                else{ //else return nil
-                    return (nil, remainingOps)
-                }
             }
+            return (nil,ops)
         }
-        return (nil,ops)
     }
     
     func PlusOrMinusExist(operation:String) -> Bool{
@@ -167,49 +157,49 @@ class CalculatorBrain{
 //        }
 //    }
     
-    private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]){ // evaluates recursively if the op is not an operand
-        if !ops.isEmpty {
-            var remainingOps = ops
-            let op = remainingOps.removeLast()
-            switch op{
-            case .Operand(let operand):
-                return (operand, remainingOps)
-            case .UnaryOperation(_, let operation):
-                let operandEval = evaluate(remainingOps) //gets the operand
-                if let operand = operandEval.result{
-                    return (operation(operand), operandEval.remainingOps)
-                }
-            case .BinaryOperation(_, let operation):
-                let op1Eval = evaluate(remainingOps)
-                if let op1 = op1Eval.result{
-                    let op2Eval = evaluate(op1Eval.remainingOps)
-                    if let op2 = op2Eval.result{
-                        return (operation(op1, op2), op2Eval.remainingOps)
+    private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]){// evaluates recursively if the op is not an operand
+        if canPerform() == false {
+            return (0, ops)
+        }
+        else{
+            if !ops.isEmpty {
+                var remainingOps = ops
+                let op = remainingOps.removeLast()
+                switch op{
+                case .Operand(let operand):
+                    return (operand, remainingOps)
+                case .UnaryOperation(_, let operation):
+                    let operandEval = evaluate(remainingOps) //gets the operand
+                    if let operand = operandEval.result{
+                        return (operation(operand), operandEval.remainingOps)
+                    }
+                case .BinaryOperation(_, let operation):
+                    let op1Eval = evaluate(remainingOps)
+                    if let op1 = op1Eval.result{
+                        let op2Eval = evaluate(op1Eval.remainingOps)
+                        if let op2 = op2Eval.result{
+                            return (operation(op1, op2), op2Eval.remainingOps)
+                        }
+                    }
+                case .NullaryOperation(_, let operation):
+                    return (operation(), remainingOps)
+                case .Variable(let symbol):
+                    if let operand = variableValues[symbol]{ //if exists in the variableValues dictionary return the corresponding value
+                        return (operand, remainingOps)
                     }
                 }
-            case .NullaryOperation(_, let operation):
-                return (operation(), remainingOps)
-            case .Variable(let symbol):
-                if let operand = variableValues[symbol]{ //if exists in the variableValues dictionary return the corresponding value
-                    return (operand, remainingOps)
-                }
-                else{ //else return nil
-                    return (nil, remainingOps)
-                }
             }
+            return (nil,ops)
         }
-        return (nil,ops)
     }
     
     func evaluate() -> Double? {
         let (result, remainingOps) = evaluate(opStack)
         println("\(opStack) = \(result) with \(remainingOps) left over")
-        //println("result is \(result)")
         return result
     }
     
     func pushOperand(operand: Double) -> Double?{
-        //println("in pushOperand")
         opStack.append(Op.Operand(operand))
         return evaluate()
     }
@@ -219,15 +209,50 @@ class CalculatorBrain{
         return evaluate()
     }
     
+    func setSymbol(symbol: String, value: Double?) -> Double? {
+        variableValues[symbol] = value
+        println(symbol)
+        println(value)
+        println(variableValues[symbol])
+        if value != nil{
+            return evaluate()
+        }
+        return nil
+    }
+    
+    func popOperand() -> Double?{
+        if !opStack.isEmpty {
+            let value = opStack.removeLast()
+            switch value{
+            case .Operand(let operand):
+                return operand
+            default: break
+            }
+        }
+        return nil
+    }
+    
     func performOperation(symbol: String) -> Double?{
-        //println("in performOperation")
         if let operation = knownOps[symbol]{ //if not nil
             opStack.append(operation)
             return evaluate()
         }
-        else{
-            return nil
+        return nil
+    }
+    
+    private func canPerform() -> Bool {
+        if !opStack.isEmpty {
+            for op in opStack{
+                switch op {
+                case .Variable(let symbol):
+                    if variableValues[symbol] == nil{
+                        return false
+                    }
+                default: break
+                }
+            }
         }
+        return true
     }
     
     func clear(){
@@ -235,9 +260,6 @@ class CalculatorBrain{
         variableValues = [String: Double]()
     }
 
-    
-    
-    
 // this function is not needed anymore
 //    func displayStack() -> String{
 //        let stringRepresentation = ", ".join(opStack.map({ "\($0)" })) // map method for arrays in this case convert an array with int values into an array with string values
