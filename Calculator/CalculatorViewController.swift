@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  CalculatorViewController.swift
 //  Calculator
 //
 //  Created by Tulin Akdogan on 1/25/15.
@@ -7,7 +7,7 @@
 //
 
 import UIKit
-class ViewController: UIViewController {
+class CalculatorViewController: UIViewController {
     @IBOutlet weak var display: UILabel!
     @IBOutlet weak var displayHistory: UILabel!
     
@@ -58,6 +58,9 @@ class ViewController: UIViewController {
                 var corrected: String = dropLast(wrongNums)
                 display.text = corrected
             }
+        }
+        else{
+            brain.popOperand()
         }
     }
     
@@ -110,6 +113,7 @@ class ViewController: UIViewController {
             }
         }
     }
+    
     
     @IBAction func enter() {
         userInTheMiddleOfTypingNumber = false
