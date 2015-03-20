@@ -8,6 +8,26 @@
 
 import UIKit
 class CalculatorViewController: UIViewController {
+    
+    //see if this function is needed or not
+    @IBAction func runGraph(sender: UIButton){
+        performSegueWithIdentifier("Show Graph", sender: nil)
+    }
+    
+    
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        var destination = segue.destinationViewController as? UIViewController
+        if let navCon = destination as? UINavigationController{
+            destination = navCon.visibleViewController
+        }
+        if let gvc = destination as? CalculatorGraphViewController {
+            if let identifier = segue.identifier{
+                
+            }
+        }
+    }
+    
     @IBOutlet weak var display: UILabel!
     @IBOutlet weak var displayHistory: UILabel!
     
