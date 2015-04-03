@@ -10,18 +10,28 @@ import UIKit
 
 class CalculatorGraphViewController: UIViewController {
 
+    var function: String = "" {
+        didSet{
+            //function =
+            println("function = \(function)")
+            updateUI()
+        }
+    }
+    
+    
+    @IBOutlet weak var graphView: GraphView!{
+        didSet{
+            //graphView.dataSource =
+            //graphView.addGestureRecognizer(UIPinchGestureRecognizer(target: graphView, action: "scale:"))
+        }
+    }
+    
     func updateUI() {
-        // title = "\(FUNCTION THAT GRAPH IS DRAWING)"
+        graphView?.setNeedsDisplay()
+        title = "\(function)"
+        
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
+    
 
 }

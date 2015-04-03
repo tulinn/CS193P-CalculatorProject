@@ -38,7 +38,7 @@
                                     <constraint firstAttribute="height" constant="24" id="eIo-n9-Kh0"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="23"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -54,7 +54,7 @@
                                     <constraint firstAttribute="height" constant="54" id="L1B-ea-om1"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="32"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -370,9 +370,6 @@
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <connections>
-                                    <action selector="operate:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xRI-T6-19U"/>
-                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CVW-oX-c2u">
                                 <rect key="frame" x="491" y="361" width="85" height="71"/>
@@ -382,9 +379,6 @@
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <connections>
-                                    <action selector="operate:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WOQ-me-Jxg"/>
-                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5fA-uk-oBn">
                                 <rect key="frame" x="491" y="281" width="85" height="72"/>
@@ -394,9 +388,6 @@
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <connections>
-                                    <action selector="operate:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Jrg-B4-ubl"/>
-                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ibM-7X-ZCk">
                                 <rect key="frame" x="491" y="201" width="85" height="72"/>
@@ -406,9 +397,6 @@
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <connections>
-                                    <action selector="operate:" destination="BYZ-38-t0r" eventType="touchUpInside" id="41S-Lk-2Qc"/>
-                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E06-wJ-dqe">
                                 <rect key="frame" x="491" y="520" width="85" height="72"/>
@@ -419,9 +407,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="operate:" destination="BYZ-38-t0r" eventType="touchUpInside" id="FFk-Ny-Awh"/>
-                                    <action selector="runGraph:" destination="BYZ-38-t0r" eventType="touchUpInside" id="INd-SO-FO8"/>
-                                    <segue destination="55o-nl-nlu" kind="showDetail" identifier="Show Graph" id="ode-tJ-ldw"/>
+                                    <action selector="runGraph:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xWK-Nq-hfF"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -598,6 +584,7 @@
                     <connections>
                         <outlet property="display" destination="Vdw-rx-7TE" id="jSH-eE-eOZ"/>
                         <outlet property="displayHistory" destination="qHX-hS-nbB" id="e2L-x6-Obk"/>
+                        <segue destination="55o-nl-nlu" kind="showDetail" identifier="runGraph" id="HkW-98-h4Y"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -616,18 +603,27 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wuH-FB-kqX" customClass="GraphView" customModule="Calculator" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wuH-FB-kqX" customClass="GraphView" customModule="Calculator" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="wuH-FB-kqX" firstAttribute="top" secondItem="i3c-JC-uIf" secondAttribute="top" id="5ru-7k-5VS"/>
+                            <constraint firstAttribute="trailing" secondItem="wuH-FB-kqX" secondAttribute="trailing" id="aQv-0w-qGG"/>
+                            <constraint firstItem="wuH-FB-kqX" firstAttribute="leading" secondItem="i3c-JC-uIf" secondAttribute="leading" id="sKT-1W-N8V"/>
+                            <constraint firstItem="wuH-FB-kqX" firstAttribute="bottom" secondItem="cPC-Ww-Uyg" secondAttribute="top" id="vcz-B8-Kiu"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="VGk-gC-N68"/>
+                    <connections>
+                        <outlet property="graphView" destination="wuH-FB-kqX" id="5nh-hp-rS0"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ed9-Bn-Eyv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="688" y="392"/>
+            <point key="canvasLocation" x="664" y="341"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="ocF-v7-uyw">
@@ -663,10 +659,10 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zyr-Ho-Twz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-124" y="392"/>
+            <point key="canvasLocation" x="-124" y="341"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="ode-tJ-ldw"/>
+        <segue reference="HkW-98-h4Y"/>
     </inferredMetricsTieBreakers>
 </document>

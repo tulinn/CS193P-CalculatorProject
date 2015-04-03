@@ -49,10 +49,10 @@ class CalculatorBrain{
     }
 
     private func get(ops: [Op]) -> (result: String?, remainingOps: [Op]){
-        if canPerform() == false {
-            return ("", ops)
-        }
-        else{
+//        if canPerform() == false {
+//            return ("", ops)
+//        }
+//        else{
             if !ops.isEmpty {
                 var remainingOps = ops
                 let op = remainingOps.removeLast()
@@ -95,17 +95,19 @@ class CalculatorBrain{
                 case .NullaryOperation(let symbol, _):
                     return (symbol, remainingOps)
                 case .Variable(let symbol):
-                    if let operand = variableValues[symbol]{ //if exists in the variableValues dictionary return the corresponding value
+                    return (symbol, remainingOps)
+                    
+                    /*if let operand = variableValues[symbol]{ //if exists in the variableValues dictionary return the corresponding value
                         return (symbol, remainingOps)
                     }
                     else{ //else return nil
                         return (nil, remainingOps)
-                    }
+                    }*/
                 }
             }
             return (nil,ops)
         }
-    }
+//    }
     
     func PlusOrMinusExist(operation:String) -> Bool{
         //println("operation = \(operation)")
@@ -133,29 +135,37 @@ class CalculatorBrain{
         //knownOps["ᐩ/-"] = Op.UnaryOperation("ᐩ/-", { -$0 })
     }
     
-//    var program: AnyObject{ //guaranteed to be a property
-//        get{
-//            var returnValue = Array<String>()
-//            for op in opStack{
-//                returnValue.append(op.description)
-//            }
-//            return returnValue
-//        }
-//        set{
-//            if let opSymbols = newValue as? Array<String>{
-//                var newOpstack = [op]()
-//                for opSymbol in opSymbols{
-//                    if let op = knownOps[opSymbol]{
-//                        newOpstack.append(op)
-//                    }
-//                    else if let operand = NSNumberFormatter().numberFromString(opSymbol)?.doubleValue{
-//                        newOpstack.append(.operand(operand))
-//                    }
-//                }
-//                opStack = newOpstack
-//            }
-//        }
-//    }
+    var program: AnyObject{ //guaranteed to be a PropertyList
+        get{
+            //can be written in only one line of code
+            //with the map functionality of arrays in a closure
+        
+            return opStack.map { $0.description }
+            
+            /* equals to the below code
+            
+            var returnValue = Array<String>()
+            for op in opStack{
+                returnValue.append(op.description)
+            }
+            return returnValue */
+        
+        }
+        set{
+            if let opSymbols = newValue as? Array<String>{
+                var newOpstack = [Op]()
+                for opSymbol in opSymbols{
+                    if let op = knownOps[opSymbol]{
+                        newOpstack.append(op)
+                    }
+                    else if let operand = NSNumberFormatter().numberFromString(opSymbol)?.doubleValue{
+                        newOpstack.append(.Operand(operand))
+                    }
+                }
+                opStack = newOpstack
+            }
+        }
+    }
     
     private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]){// evaluates recursively if the op is not an operand
         if canPerform() == false {
@@ -198,6 +208,8 @@ class CalculatorBrain{
         println("\(opStack) = \(result) with \(remainingOps) left over")
         return result
     }
+    
+    
     
     func pushOperand(operand: Double) -> Double?{
         opStack.append(Op.Operand(operand))

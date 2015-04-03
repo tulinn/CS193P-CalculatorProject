@@ -9,12 +9,9 @@
 import UIKit
 class CalculatorViewController: UIViewController {
     
-    //see if this function is needed or not
-    @IBAction func runGraph(sender: UIButton){
-        performSegueWithIdentifier("Show Graph", sender: nil)
+    @IBAction func runGraph(sender: UIButton) {
+        performSegueWithIdentifier("runGraph", sender: nil)
     }
-    
-    
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         var destination = segue.destinationViewController as? UIViewController
@@ -116,6 +113,7 @@ class CalculatorViewController: UIViewController {
             checkValue = brain.performOperation(operation)
             displayValue = checkValue
             if let result = checkValue { //if not nil
+                //println(brain.description)
                 displayHistory.text = brain.description! + " ="
             }
         }

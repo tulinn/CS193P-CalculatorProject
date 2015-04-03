@@ -8,12 +8,13 @@
 
 import UIKit
 
+@IBDesignable
 class AxesDrawer
 {
     private struct Constants {
         static let HashmarkSize: CGFloat = 6
     }
-    
+
     var color = UIColor.blueColor()
     var minimumPointsPerHashmark: CGFloat = 40
     var contentScaleFactor: CGFloat = 1 // set this from UIView's contentScaleFactor to position axes with maximum accuracy
