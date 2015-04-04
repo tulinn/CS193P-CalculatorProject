@@ -31,7 +31,6 @@ class CalculatorViewController: UIViewController {
     var userInTheMiddleOfTypingNumber: Bool = false
     var brain = CalculatorBrain()
     var theNumberIsFloating: Bool = false
-    var opDisplayInUse: Bool = false
     var checkValue: Double?
     
     @IBAction func appendDigit(sender: UIButton) { //appends digit by digit to the display
@@ -96,7 +95,6 @@ class CalculatorViewController: UIViewController {
         displayHistory.text = "0"
         display.text = "0"
         brain.clear()
-        opDisplayInUse = false
         userInTheMiddleOfTypingNumber = false
         theNumberIsFloating = false
     }

@@ -14,6 +14,7 @@ class CalculatorBrain{
         case BinaryOperation(String, (Double, Double) -> Double)
         case NullaryOperation(String, () -> Double)
         case Variable(String)
+        
         var description: String{
             get{
                 switch self{
@@ -36,15 +37,29 @@ class CalculatorBrain{
     private var knownOps = [String:Op]()
     private var variableValues: Dictionary<String,Double?> = [String: Double?]()
     private var symbolInUse: Bool = false
+    private var change: Int = 0
     
     var description: String?{
         get{
             var stackCopy = opStack
+            var history: String? = ""
+            //var (result, remainingOps) = ("", stackCopy)
+            var result: String?
+            var remainingOps = opStack
             //println(stackCopy)
-            if let result = get(stackCopy).result{
-                return result
+            while remainingOps.count > 0{
+                println("remainingOps is \(remainingOps)")
+                
+                (result, remainingOps) = get(remainingOps)
+                if history == ""{
+                    history = result!
+                }
+                else{
+                    history = "\(result!), \(history!)"
+                    println("history is \(history!)")
+                }
             }
-            return nil
+            return history
         }
     }
 
@@ -105,7 +120,7 @@ class CalculatorBrain{
                     }*/
                 }
             }
-            return (nil,ops)
+            return ("?",ops)
         }
 //    }
     
@@ -199,7 +214,8 @@ class CalculatorBrain{
                     }
                 }
             }
-            return (nil,ops)
+            //pushOperand("?")
+            return(nil, ops)
         }
     }
     
@@ -209,7 +225,12 @@ class CalculatorBrain{
         return result
     }
     
-    
+    func stackIsEmpty() -> Bool{
+        if opStack.isEmpty{
+            return true
+        }
+        return false
+    }
     
     func pushOperand(operand: Double) -> Double?{
         opStack.append(Op.Operand(operand))
