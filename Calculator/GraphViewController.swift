@@ -10,13 +10,25 @@ import UIKit
 
 class GraphViewController: UIViewController, GraphViewDataSource {
 
+    var brain = CalculatorBrain()
+    
     var function: String = "" {
         didSet{
-            var program: String = brain.program as String
-            var functions = program.componentsSeparatedByString(",")
-            function = functions.removeLast()
-            println("function = \(function)")
-            updateUI()
+            if let description = brain.description{
+                var functions = description.componentsSeparatedByString(",")
+                function = functions.removeLast()
+                println("function = \(function)")
+                updateUI()
+            }
+        }
+    }
+    
+    var program: AnyObject{ //guaranteed to be a PropertyList
+        get{
+            return brain.program
+        }
+        set{
+            brain.program = newValue
         }
     }
     
@@ -28,28 +40,23 @@ class GraphViewController: UIViewController, GraphViewDataSource {
                 return CGFloat(result)
             }
         }
+        else{
+            if let result = brain.evaluate(){
+                return CGFloat(result)
+            }
+        }
         return nil
     }
     
-    var brain = CalculatorBrain()
-    
     @IBOutlet weak var graphView: GraphView!{
         didSet{
-            //graphView.dataSource = brain.program
+            graphView.dataSource = self
             //graphView.addGestureRecognizer(UIPinchGestureRecognizer(target: graphView, action: "scale:"))
         }
     }
     
-//    func functionValueForPixel(sender: GraphView) -> Double?{
-//        //return
-//    }
-    
     func updateUI() {
         graphView?.setNeedsDisplay()
         title = "\(function)"
-        
     }
-
-    
-
 }
