@@ -43,14 +43,14 @@ class CalculatorBrain{
         get{
             var stackCopy = opStack
             var history: String? = ""
-            //var (result, remainingOps) = ("", stackCopy)
+            // var (result, remainingOps) = ("", stackCopy)
             var result: String?
             var remainingOps = opStack
-            //println(stackCopy)
+            // println(stackCopy)
             while remainingOps.count > 0{
-                println("remainingOps is \(remainingOps)")
                 
                 (result, remainingOps) = get(remainingOps)
+                println("remainingOps is \(remainingOps)")
                 if history == ""{
                     history = result!
                 }
@@ -176,13 +176,16 @@ class CalculatorBrain{
                     else if let operand = NSNumberFormatter().numberFromString(opSymbol)?.doubleValue{
                         newOpstack.append(.Operand(operand))
                     }
+                    else{
+                        newOpstack.append(.Variable(opSymbol))
+                    }
                 }
                 opStack = newOpstack
             }
         }
     }
     
-    private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]){// evaluates recursively if the op is not an operand
+    private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]){ // evaluates recursively if the op is not an operand
         if canPerform() == false {
             return (0, ops)
         }
@@ -209,12 +212,12 @@ class CalculatorBrain{
                 case .NullaryOperation(_, let operation):
                     return (operation(), remainingOps)
                 case .Variable(let symbol):
-                    if let operand = variableValues[symbol]{ //if exists in the variableValues dictionary return the corresponding value
+                    if let operand = variableValues[symbol]{ // if exists in the variableValues dictionary return the corresponding value
                         return (operand, remainingOps)
                     }
                 }
             }
-            //pushOperand("?")
+            // pushOperand("?")
             return(nil, ops)
         }
     }

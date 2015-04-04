@@ -591,10 +591,10 @@
             </objects>
             <point key="canvasLocation" x="688" y="-482"/>
         </scene>
-        <!--Calculator Graph View Controller-->
+        <!--Graph View Controller-->
         <scene sceneID="Hrp-lk-oVb">
             <objects>
-                <viewController id="wv4-hl-wnH" customClass="CalculatorGraphViewController" customModule="Calculator" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="wv4-hl-wnH" customClass="GraphViewController" customModule="Calculator" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ddz-rQ-EJm"/>
                         <viewControllerLayoutGuide type="bottom" id="cPC-Ww-Uyg"/>

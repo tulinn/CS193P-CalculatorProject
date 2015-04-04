@@ -15,7 +15,6 @@ protocol GraphViewDataSource: class{
 }
 
 
-
 @IBDesignable
 class GraphView: UIView {
 

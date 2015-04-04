@@ -18,7 +18,7 @@ class CalculatorViewController: UIViewController {
         if let navCon = destination as? UINavigationController{
             destination = navCon.visibleViewController
         }
-        if let gvc = destination as? CalculatorGraphViewController {
+        if let gvc = destination as? GraphViewController {
             if let identifier = segue.identifier{
                 
             }
