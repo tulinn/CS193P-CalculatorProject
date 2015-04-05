@@ -18,7 +18,7 @@
             </objects>
             <point key="canvasLocation" x="-844" y="-68"/>
         </scene>
-        <!--Calculator View Controller-->
+        <!--Calculator-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="CalculatorViewController" customModule="Calculator" customModuleProvider="target" sceneMemberID="viewController">
@@ -569,7 +569,7 @@
                             </mask>
                         </variation>
                     </view>
-                    <navigationItem key="navigationItem" id="1SZ-nW-gk6"/>
+                    <navigationItem key="navigationItem" title="Calculator" id="1SZ-nW-gk6"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                             <integer key="value" value="10"/>

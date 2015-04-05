@@ -14,16 +14,12 @@ class GraphViewController: UIViewController, GraphViewDataSource {
     
     var function: String = "" {
         didSet{
-            if let description = brain.description{
-                var functions = description.componentsSeparatedByString(",")
-                function = functions.removeLast()
-                println("function = \(function)")
-                updateUI()
-            }
+            // println("function = \(function)")
+            updateUI()
         }
     }
     
-    var program: AnyObject{ //guaranteed to be a PropertyList
+    var program: AnyObject{ // guaranteed to be a PropertyList
         get{
             return brain.program
         }

@@ -61,7 +61,9 @@ class GraphView: UIView {
         }
     }
     
-
+    private func align(coordinate: CGFloat) -> CGFloat {
+        return round(coordinate * contentScaleFactor) / contentScaleFactor
+    }
     
 //    private struct Constants {
 //        //static let HashmarkSize: CGFloat = 6
@@ -80,7 +82,4 @@ class GraphView: UIView {
             gesture.scale = 1
         }
     }
-    
-    
-
 }

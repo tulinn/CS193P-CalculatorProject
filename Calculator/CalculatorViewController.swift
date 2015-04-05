@@ -20,7 +20,15 @@ class CalculatorViewController: UIViewController {
         }
         if let gvc = destination as? GraphViewController {
             if let identifier = segue.identifier{
-                
+                if let description = brain.description{
+                    if description.lowercaseString.rangeOfString(",") != nil{
+                        var functions = description.componentsSeparatedByString(",")
+                        gvc.function = functions.removeLast()
+                    }
+                    else{
+                        gvc.function = description
+                    }
+                }
             }
         }
     }
